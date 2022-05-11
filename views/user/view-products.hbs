@@ -11,12 +11,15 @@
                         <div class="card-body">
                             <h5 class="card-title">{{this.Name}}</h5>
                             <p class="card-text" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{this.Description}}</p>
-                            <a href="/add-to-cart/{{this._id}}" class="btn btn-primary">Add to Cart</a>
+                            <button onclick="addToCart('{{this._id}}')" class="btn btn-primary">Add to Cart</button>
                         </div>
                     </div>
                 </div>
                 {{/each}}
             </div>
         </div>
-
     </section>
+
+    <script>
+       
+    </script>
