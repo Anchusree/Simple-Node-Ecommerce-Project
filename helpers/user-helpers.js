@@ -2,6 +2,7 @@ const db = require('../config/connection')
 const collection = require('../config/collections')
 const bcrypt = require('bcrypt')
 const { ObjectId } = require('mongodb')
+const { response } = require('express')
 
 module.exports = {
     doSignup: (userData) => {
@@ -217,8 +218,82 @@ module.exports = {
                     }
                 }
             ]).toArray()
-             console.log("total ",total)
-            resolve(total[0].total)
+             //console.log("total ",total)
+            resolve( total[0].total)
+        })
+    },
+    placeOrder:(order,products,total)=>{
+        return new Promise((resolve,reject)=>{
+           //console.log(order,products,total)
+           let status = order.paymentmethod ==='COD' ? 'placed' : 'pending' 
+           let orderObj ={
+               deliveryDetails:{
+                   mobile:order.Mobile,
+                   address:order.Address,
+                   pincode:order.Pincode
+               },
+               userId:ObjectId(order.userId),
+               paymentmethod:order.paymentmethod,
+               products:products,
+               status:status,
+               total:total,
+               date:new Date()
+           }
+           db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObj).then((respomnse)=>{
+               db.get().collection(collection.CART_COLLECTION).deleteOne({user:ObjectId(order.userId)})
+            resolve()
+           })
+          
+        })
+    },
+    getCartProductList:(userId)=>{
+        return new Promise(async(resolve,reject)=>{
+            let cart = await db.get().collection(collection.CART_COLLECTION).findOne({user:ObjectId(userId)})
+            console.log(cart)
+            resolve(cart.products)
+        })
+    },
+    getOrderHistory:(userId)=>{
+        return new Promise(async(resolve,reject)=>{
+            let orders = await db.get().collection(collection.ORDER_COLLECTION)
+            .find({userId:ObjectId(userId)}).toArray()
+            //console.log(orders)
+            resolve(orders)
+        })
+    },
+    getOrderProducts:(userId)=>{
+        return new Promise(async (resolve, reject) => {
+            let orderItems = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: { _id: ObjectId(orderId) }
+                },
+                {
+                    $unwind:'$products'
+                },
+                {
+                    $project:{
+                        item:'$products.item',
+                        quantity:'$products.quantity',
+                    }
+                },
+                {
+                    $lookup:{
+                        from:collection.PRODUCT_COLLECTION,
+                        localField:'item',
+                        foreignField:'_id',
+                        as:'product'
+                    }
+                },
+                {
+                    $project:{
+                        item:1,
+                        quantity:1,
+                        product:{$arrayElemAt:['$product',0]}
+                    }
+                }
+            ]).toArray()
+             console.log("cartItems ",orderItems)
+            resolve(orderItems)
         })
     }
 }
