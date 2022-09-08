@@ -56,4 +56,11 @@ router.post('/edit-product/:id',async(req,res)=>{
     }
   })
 })
+
+
+router.get('/login', function(req, res) {
+
+});
+
+
 module.exports = router;
