@@ -5,9 +5,8 @@ const userHelpers = require('../helpers/user-helpers')
 
 
 const verifyLogin = (req,res,next)=>{
-
   if(req.session.userLoggedIn){
-    next()
+    next();
   }
   else{
     res.redirect('/login')
@@ -16,17 +15,41 @@ const verifyLogin = (req,res,next)=>{
 /* GET home page. */
 router.get('/', async function(req, res, next) {
   let user = req.session.user
-  console.log('user',user)
-
+  if(user){
+    console.log('user',user)
+  }
   let cartCount = null
   if(user && user._id){
     cartCount = await userHelpers.getCartCount(req.session.user._id)
   }
+  else{
+    cartCount = 0
+  }
 
-  productHelpers.getAllProducts().then((products)=>{
+  // productHelpers.getAllProducts().then((products)=>{
+  //   res.render('user/view-products', { products,user,cartCount});
+  // })
+  productHelpers.getAllLimitedProducts().then((products)=>{
     res.render('user/view-products', { products,user,cartCount});
   })
 });
+router.get('/allproducts',async function(req, res, next) {
+  let user = req.session.user
+  if(user){
+    console.log('user',user)
+  }
+  let cartCount = null
+  if(user && user._id){
+    cartCount = await userHelpers.getCartCount(req.session.user._id)
+  }
+  else{
+    cartCount = 0
+  }
+
+  productHelpers.getAllProducts().then((products)=>{
+    res.render('user/view-allproducts', { products,user,cartCount});
+  })
+})
 
 router.get('/login',(req,res)=>{
   if(req.session.user){
@@ -53,7 +76,6 @@ router.post('/login',(req,res)=>{
   userHelpers.doLogin(req.body)
   .then((response)=>{
     if(response.status){
-      
       req.session.user = response.user
       req.session.userLoggedIn = true
       res.redirect('/')
@@ -73,16 +95,19 @@ router.get('/logout',(req,res)=>{
 
 router.get('/cart',verifyLogin,async (req, res)=> {
   let products = await userHelpers.getCartProducts(req.session.user._id)
+  if(user && user._id){
+    cartCount = await userHelpers.getCartCount(req.session.user._id)
+  }
   let total = 0;
   if(products.length > 0){
      total = await userHelpers.getTotalAmount(req.session.user._id)
-
   }
 
-  res.render('user/cart',{products,'user':req.session.user,total})
+  res.render('user/cart',{products,'user':req.session.user,total,cartCount})
 });
 
 router.get('/add-to-cart/:id',(req, res)=> {
+
   userHelpers.addToCart(req.params.id,req.session.user._id).then((response)=>{
     console.log("cart response ",response)
     if(response){
@@ -98,6 +123,25 @@ router.get('/add-to-cart/:id',(req, res)=> {
  })
 })
 
+router.get('/add-to-wishlist/:id',(req, res)=> {
+
+  userHelpers.addToWishlist(req.params.id,req.session.user._id).then((response)=>{
+    console.log("cart response ",response)
+    if(response){
+      console.log("cart response2 ",response)
+      res.json({status:true})
+    }
+    else{
+      console.log("Something went wrong");
+    }
+ })
+})
+
+router.get('/wishlist',verifyLogin,async (req, res)=> {
+  let products = await userHelpers.getWishlistProducts(req.session.user._id)
+
+  res.render('user/wishlist',{products,'user':req.session.user})
+});
 router.post('/change-product-quantity',(req,res,next)=>{
   //console.log("hey ",req.body);
   userHelpers.changeProductQuantity(req.body).then(async(response)=>{

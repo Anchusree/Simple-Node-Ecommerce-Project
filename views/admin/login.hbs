@@ -2,7 +2,7 @@
     <div class="col-md-6 m-auto">
         <div class="container mt-5 pl-5">
             <h2 class="text-center">Admin Login</h2>
-            <form action="/login" method="POST">
+            <form action="/admin/adminlogin" method="POST">
                {{#if loginErr}}
                     <p class="error">{{loginErr}}</p>
                {{/if}} 
@@ -10,12 +10,22 @@
                     <label for="">Email Address</label>
                     <input type="email" class="form-control" name="Email" placeholder="Enter email">
                 </div>
+                <br/>
                 <div class="form-group">
                     <label for="">Password</label>
                 <input type="password" name="Password" class="form-control" class="Enter Password">
                 </div>
-                <button type="submit" style="float:right;" class="btn btn-primary float-right">Login</button>
+                <br/>
+                <div class="forgot-grid">
+                        <div class="forgot">
+                            <a href="#">Forgot Password?</a>
+                        </div>
+                        <div class="clearfix"> </div>
+                    </div>
+                <button type="submit" style="" class="btn btn-primary text-center">Login</button>
+                 
             </form>
         </div>
     </div>
+    <br/>
 </div>

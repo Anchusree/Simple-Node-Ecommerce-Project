@@ -1,0 +1,63 @@
+
+
+<script>
+  $(document).ready( function () {
+    $('#productListTable').DataTable();
+  });
+
+</script>
+
+
+<div class="cbp-spmenu-push">
+  <div class="main-content">
+    {{>dash-header}}
+
+    <div id="page-wrapper">
+<section>
+    <div class="container">
+       
+        <div class="pt-5" style="text-align:center">
+            <h4>All Orders</h4>
+        </div>
+         <br/>
+        <table class="table mt-5" id="productListTable" style="width: 950px;">
+  <thead>
+    <tr>
+      <th scope="col">No</th>
+      <th scope="col">UserId</th>
+      <th scope="col">Date Ordered</th>
+      <th scope="col">PaymentMethod</th>
+      <th scope="col">Amount Paid</th>
+      <th scope="col">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+      {{#each orders}}
+    <tr>
+      <td scope="row">{{@index}}</td>
+      <td>{{this.userId}}</td>
+      <td>{{this.date}}</td>
+      <td>{{this.paymentmethod}}</td>
+      <td>{{this.total}}</td>
+      <td>{{this.status}}</td>
+    </tr>
+    {{/each}}
+ 
+  </tbody>
+</table>
+    </div>
+</section>
+    
+    </div>
+
+  </div>
+
+  {{>dash-footer}}
+
+
+
+<script>
+  $(document).ready(function () {
+    $('#productListTable').DataTable();
+  });
+</script>

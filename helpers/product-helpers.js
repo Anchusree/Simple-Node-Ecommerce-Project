@@ -1,6 +1,5 @@
 const db = require('../config/connection')
 const collection = require('../config/collections')
-const objectId = require('mongodb').ObjectId
 
 module.exports ={
 
@@ -14,6 +13,15 @@ module.exports ={
     getAllProducts:()=>{
         return new Promise(async(resolve,reject)=>{
             let products = await db.get().collection(collection.PRODUCT_COLLECTION).find()
+            .toArray()
+            resolve(products)
+        })
+    },
+    getAllLimitedProducts:()=>{
+        return new Promise(async(resolve,reject)=>{
+            let products = await db.get().collection(collection.PRODUCT_COLLECTION).aggregate([
+                { $limit : 4 }
+             ])
             .toArray()
             resolve(products)
         })

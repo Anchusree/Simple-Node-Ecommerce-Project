@@ -1,0 +1,51 @@
+<div class="cbp-spmenu-push">
+  <div class="main-content">
+    {{>dash-header}}
+
+    <div id="page-wrapper">
+
+      <section>
+        <div class="container">
+          {{!-- <div class="row" style="text-align-center"> --}}
+            <a href="/admin/add-category" style="width:160px" class="btn btn-success ms-auto mb-5">Add Category</a>
+            {{!--
+          </div> --}}
+          <table class="table mt-1" id="productListTable" style="width: 900px;">
+            <thead>
+              <tr>
+                <th scope="col">No</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Image</th>
+                <th scope="col">Options</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each category}}
+              <tr>
+                <td scope="row">{{@index}}</td>
+                <td>{{this.Name}}</td>
+                <td>{{this.Description}}</td>
+                <td><img style="width:50px;height:50px" src="/product-images/{{this._id}}.jpg" alt=""></td>
+                <td><a href="/admin//edit-category/{{this._id}}" class="btn btn-primary">Edit</a></td>
+                <td><a href="/admin/delete-category/{{this._id}}" class="btn btn-danger"
+                    onclick="return confirm('Are you sure you want to delete {{this.Name}}?')">X</a></td>
+              </tr>
+              {{/each}}
+
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+  </div>
+
+  {{>dash-footer}}
+
+<script>
+  $(document).ready(function () {
+    $('#productListTable').DataTable();
+  });
+</script>

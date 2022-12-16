@@ -1,4 +1,13 @@
-<section>
+
+
+
+<div class="cbp-spmenu-push">
+  <div class="main-content">
+    {{>dash-header}}
+
+    <div id="page-wrapper">
+
+    <section>
     <div class="container mt-4">
         <div class="row">
             <div class="col-md-6">
@@ -20,3 +29,17 @@
         </div>
     </div>
 </section>
+
+    </div>
+
+  </div>
+
+  {{>dash-footer}}
+
+
+
+<script>
+  $(document).ready(function () {
+    $('#productListTable').DataTable();
+  });
+</script>
